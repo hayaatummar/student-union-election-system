@@ -1,4 +1,4 @@
-# 🎓 Student Union Election System
+#  Student Union Election System
 
 A modern, full-stack web application for managing university student union elections. Built with React, Node.js, PostgreSQL, and Prisma ORM.
 
@@ -6,15 +6,15 @@ A modern, full-stack web application for managing university student union elect
 
 ---
 
-## 🚀 Features
+##  Features
 
-### 🔐 Authentication
+###  Authentication
 - JWT-based authentication with bcrypt password hashing
 - Role-based access control (Admin, Candidate, Student)
 - Session persistence with Zustand
 - Protected routes per role
 
-### 👑 Admin
+### Admin
 - Dashboard with live statistics and charts
 - Create, edit, delete, and manage elections
 - Approve/reject candidate applications
@@ -24,14 +24,14 @@ A modern, full-stack web application for managing university student union elect
 - Enable/disable voting
 - Full audit log trail
 
-### 🏆 Candidate
+###  Candidate
 - Campaign profile management
 - Upload profile photo and campaign poster
 - Write and update manifesto
 - View real-time vote count
 - Social links (Twitter, LinkedIn)
 
-### 🗳️ Student/Voter
+### Student/Voter
 - Browse active elections
 - View candidate profiles and manifestos
 - Vote securely (one vote per position per election)
@@ -39,7 +39,7 @@ A modern, full-stack web application for managing university student union elect
 - View voting history
 - View published results
 
-### 📊 Analytics
+### Analytics
 - Real-time vote count updates via Socket.IO
 - Charts: Area, Bar, Pie (Recharts)
 - Votes over time
@@ -48,7 +48,7 @@ A modern, full-stack web application for managing university student union elect
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -66,7 +66,7 @@ A modern, full-stack web application for managing university student union elect
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 student-union-election-system/
@@ -99,7 +99,7 @@ student-union-election-system/
 
 ---
 
-## ⚙️ Setup Instructions
+##  Setup Instructions
 
 ### Prerequisites
 - Node.js 18+
@@ -169,7 +169,7 @@ npm run dev:frontend  # http://localhost:5173
 
 ---
 
-## 🔑 Test Credentials
+##  Test Credentials
 
 | Role | Email | Password |
 |------|-------|----------|
@@ -179,7 +179,7 @@ npm run dev:frontend  # http://localhost:5173
 
 ---
 
-## 📡 API Endpoints
+##  API Endpoints
 
 ### Auth
 | Method | Endpoint | Description |
@@ -226,7 +226,7 @@ npm run dev:frontend  # http://localhost:5173
 
 ---
 
-## 🗄️ Database Schema
+##  Database Schema
 
 ```
 Users ──────────────────────────────────────────────────────
@@ -251,7 +251,7 @@ AuditLogs ───────────────────────�
 
 ---
 
-## 🌐 Pages
+##  Pages
 
 | Page | Path | Access |
 |------|------|--------|
@@ -272,7 +272,7 @@ AuditLogs ───────────────────────�
 
 ---
 
-## 🔒 Security Features
+## Security Features
 
 - JWT token authentication
 - bcrypt password hashing (12 rounds)
@@ -285,7 +285,7 @@ AuditLogs ───────────────────────�
 
 ---
 
-## 📱 Responsive Design
+## Responsive Design
 
 - Mobile-first approach
 - Collapsible sidebar on mobile
@@ -295,7 +295,7 @@ AuditLogs ───────────────────────�
 
 ---
 
-## 🏗️ Built for Assessment
+##  Built for Assessment
 
 This project demonstrates:
 - Full-stack architecture
