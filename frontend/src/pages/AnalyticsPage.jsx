@@ -19,7 +19,6 @@ export default function AnalyticsPage() {
   const [dashboard, setDashboard] = useState(null)
   const [elections, setElections] = useState([])
   const [selectedElection, setSelectedElection] = useState('')
-  const [electionAnalytics, setElectionAnalytics] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

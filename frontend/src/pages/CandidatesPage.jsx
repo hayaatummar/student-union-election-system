@@ -3,7 +3,6 @@ import { UserCheck, CheckCircle, XCircle, Eye } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import PageHeader from '@/components/common/PageHeader'
@@ -23,25 +22,26 @@ export default function CandidatesPage() {
   const [elections, setElections] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState(user?.role === 'ADMIN' ? '' : 'APPROVED')
-  const [electionFilter, setElectionFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState(user?.role === 'ADMIN' ? 'all' : 'APPROVED')
+  const [electionFilter, setElectionFilter] = useState('all')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [selected, setSelected] = useState(null)
 
   useEffect(() => {
-    electionService.getAll({ limit: 50 }).then((r) => setElections(r.data.data)).catch(() => {})
+    electionService.getAll({ limit: 50 })
+      .then((r) => setElections(r.data.data || []))
+      .catch(() => {})
   }, [])
 
   const fetchCandidates = async () => {
     setLoading(true)
     try {
-      const res = await candidateService.getAll({
-        page, limit: 12, search,
-        status: statusFilter,
-        electionId: electionFilter,
-      })
-      setCandidates(res.data.data)
+      const params = { page, limit: 12, search }
+      if (statusFilter !== 'all') params.status = statusFilter
+      if (electionFilter !== 'all') params.electionId = electionFilter
+      const res = await candidateService.getAll(params)
+      setCandidates(res.data.data || [])
       setTotalPages(res.data.pagination?.totalPages || 1)
     } catch {
       toast.error('Failed to load candidates')
@@ -73,7 +73,7 @@ export default function CandidatesPage() {
             <SelectValue placeholder="All Elections" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Elections</SelectItem>
+            <SelectItem value="all">All Elections</SelectItem>
             {elections.map((e) => <SelectItem key={e.id} value={e.id}>{e.title}</SelectItem>)}
           </SelectContent>
         </Select>
@@ -83,7 +83,7 @@ export default function CandidatesPage() {
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Status</SelectItem>
+              <SelectItem value="all">All Status</SelectItem>
               <SelectItem value="PENDING">Pending</SelectItem>
               <SelectItem value="APPROVED">Approved</SelectItem>
               <SelectItem value="REJECTED">Rejected</SelectItem>
@@ -159,10 +159,10 @@ function CandidateCard({ candidate, isAdmin, onView, onApprove, onReject }) {
           </Button>
           {isAdmin && candidate.status === 'PENDING' && (
             <>
-              <Button size="sm" variant="outline" className="text-green-600 hover:text-green-700" onClick={onApprove}>
+              <Button size="sm" variant="outline" className="text-green-600 hover:text-green-700 border-green-200" onClick={onApprove} title="Approve">
                 <CheckCircle className="h-3.5 w-3.5" />
               </Button>
-              <Button size="sm" variant="outline" className="text-destructive hover:text-destructive" onClick={onReject}>
+              <Button size="sm" variant="outline" className="text-destructive hover:text-destructive border-red-200" onClick={onReject} title="Reject">
                 <XCircle className="h-3.5 w-3.5" />
               </Button>
             </>
@@ -181,6 +181,9 @@ function CandidateDetailModal({ candidate, onClose }) {
           <DialogTitle>Candidate Profile</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
+          {candidate.campaignPoster && (
+            <img src={candidate.campaignPoster} alt="Campaign poster" className="w-full h-40 object-cover rounded-lg" />
+          )}
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16">
               <AvatarImage src={candidate.user?.avatar} />
@@ -196,10 +199,10 @@ function CandidateDetailModal({ candidate, onClose }) {
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-sm">
-            <div><span className="text-muted-foreground">Election:</span> <span className="font-medium">{candidate.election?.title}</span></div>
-            <div><span className="text-muted-foreground">Year:</span> <span className="font-medium">{candidate.year || 'N/A'}</span></div>
-            <div><span className="text-muted-foreground">Semester:</span> <span className="font-medium">{candidate.semester || 'N/A'}</span></div>
-            <div><span className="text-muted-foreground">Votes:</span> <span className="font-bold text-primary">{candidate.voteCount}</span></div>
+            <div><span className="text-muted-foreground">Election: </span><span className="font-medium">{candidate.election?.title}</span></div>
+            <div><span className="text-muted-foreground">Year: </span><span className="font-medium">{candidate.year || 'N/A'}</span></div>
+            <div><span className="text-muted-foreground">Semester: </span><span className="font-medium">{candidate.semester || 'N/A'}</span></div>
+            <div><span className="text-muted-foreground">Votes: </span><span className="font-bold text-primary">{candidate.voteCount}</span></div>
           </div>
 
           {candidate.manifesto && (
@@ -209,13 +212,13 @@ function CandidateDetailModal({ candidate, onClose }) {
             </div>
           )}
 
-          {candidate.socialLinks && Object.keys(candidate.socialLinks).length > 0 && (
+          {candidate.socialLinks && Object.keys(candidate.socialLinks).filter(k => candidate.socialLinks[k]).length > 0 && (
             <div>
               <p className="text-sm font-medium mb-1">Social Links</p>
               <div className="flex gap-2 flex-wrap">
-                {Object.entries(candidate.socialLinks).map(([platform, url]) => (
+                {Object.entries(candidate.socialLinks).filter(([, url]) => url).map(([platform, url]) => (
                   <a key={platform} href={url} target="_blank" rel="noopener noreferrer"
-                    className="text-xs px-2 py-1 rounded border hover:bg-accent capitalize">
+                    className="text-xs px-2 py-1 rounded border hover:bg-accent capitalize text-primary">
                     {platform}
                   </a>
                 ))}

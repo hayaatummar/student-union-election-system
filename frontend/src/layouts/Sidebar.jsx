@@ -67,8 +67,8 @@ export default function Sidebar({ open, onClose }) {
               <GraduationCap className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <p className="font-bold text-sm leading-none">UniElect</p>
-              <p className="text-xs text-muted-foreground">Election System</p>
+              <p className="font-bold text-sm leading-none">UoH Elections</p>
+              <p className="text-xs text-muted-foreground">Students' Union Portal</p>
             </div>
           </div>
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={onClose}>

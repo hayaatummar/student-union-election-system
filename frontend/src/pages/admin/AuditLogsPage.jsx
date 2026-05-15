@@ -35,8 +35,9 @@ export default function AuditLogsPage() {
     setLoading(true)
     try {
       const res = await analyticsService.getAuditLogs({ page, limit: 20, action: search })
-      setLogs(res.data.data.logs)
-      setTotalPages(res.data.data.pagination?.totalPages || 1)
+      const responseData = res.data.data
+      setLogs(responseData?.logs || [])
+      setTotalPages(responseData?.pagination?.totalPages || 1)
     } catch {
       toast.error('Failed to load audit logs')
     } finally {

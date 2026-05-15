@@ -76,7 +76,7 @@ export default function VotePage() {
 
   const positions = election.positions || []
   const currentPosition = positions[currentPositionIdx]
-  const alreadyVotedPositionIds = voteStatus?.votedPositionIds || []
+  const alreadyVotedPositionIds = voteStatus?.votedPositionIds || voteStatus?.votes?.map(v => v.positionId) || []
   const isPositionVoted = alreadyVotedPositionIds.includes(currentPosition?.id)
 
   const handleSelect = (positionId, candidateId) => {
@@ -86,11 +86,17 @@ export default function VotePage() {
   const handleSubmit = async () => {
     setSubmitting(true)
     try {
-      const votes = Object.entries(selections).map(([positionId, candidateId]) => {
-        const position = positions.find((p) => p.id === positionId)
-        const candidate = position?.candidates?.find((c) => c.id === candidateId)
-        return { electionId: id, positionId, candidateId }
-      })
+      // Only submit votes for positions not already voted
+      const votes = Object.entries(selections)
+        .filter(([positionId]) => !alreadyVotedPositionIds.includes(positionId))
+        .map(([positionId, candidateId]) => ({ electionId: id, positionId, candidateId }))
+
+      if (votes.length === 0) {
+        toast.error('No new votes to submit')
+        setSubmitting(false)
+        setConfirmOpen(false)
+        return
+      }
 
       for (const vote of votes) {
         await voteService.castVote(vote)

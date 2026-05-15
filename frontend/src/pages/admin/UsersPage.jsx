@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Users, Pencil, Trash2, UserCheck } from 'lucide-react'
+import { Users, Pencil, Trash2 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -22,7 +22,7 @@ export default function UsersPage() {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [roleFilter, setRoleFilter] = useState('')
+  const [roleFilter, setRoleFilter] = useState('all')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [editUser, setEditUser] = useState(null)
@@ -31,8 +31,10 @@ export default function UsersPage() {
   const fetchUsers = async () => {
     setLoading(true)
     try {
-      const res = await userService.getAll({ page, limit: 10, search, role: roleFilter })
-      setUsers(res.data.data)
+      const params = { page, limit: 10, search }
+      if (roleFilter !== 'all') params.role = roleFilter
+      const res = await userService.getAll(params)
+      setUsers(res.data.data || [])
       setTotalPages(res.data.pagination?.totalPages || 1)
     } catch {
       toast.error('Failed to load users')
@@ -76,7 +78,7 @@ export default function UsersPage() {
             <SelectValue placeholder="All Roles" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Roles</SelectItem>
+            <SelectItem value="all">All Roles</SelectItem>
             <SelectItem value="ADMIN">Admin</SelectItem>
             <SelectItem value="CANDIDATE">Candidate</SelectItem>
             <SelectItem value="STUDENT">Student</SelectItem>
@@ -126,17 +128,17 @@ export default function UsersPage() {
                       </td>
                       <td className="p-4 hidden lg:table-cell text-muted-foreground">{formatDate(u.createdAt)}</td>
                       <td className="p-4">
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${u.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${u.isActive ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'}`}>
                           {u.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </td>
                       <td className="p-4 text-right">
                         <div className="flex items-center justify-end gap-1">
-                          <Button variant="ghost" size="icon" onClick={() => setEditUser(u)}>
+                          <Button variant="ghost" size="icon" onClick={() => setEditUser(u)} title="Edit user">
                             <Pencil className="h-3.5 w-3.5" />
                           </Button>
                           {u.id !== currentUser?.id && (
-                            <Button variant="ghost" size="icon" onClick={() => setDeleteId(u.id)} className="text-destructive hover:text-destructive">
+                            <Button variant="ghost" size="icon" onClick={() => setDeleteId(u.id)} className="text-destructive hover:text-destructive" title="Delete user">
                               <Trash2 className="h-3.5 w-3.5" />
                             </Button>
                           )}
@@ -153,12 +155,10 @@ export default function UsersPage() {
 
       <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
 
-      {/* Edit Modal */}
       {editUser && (
         <EditUserModal user={editUser} onClose={() => setEditUser(null)} onSave={handleUpdate} />
       )}
 
-      {/* Delete Confirm */}
       <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <DialogContent>
           <DialogHeader><DialogTitle>Delete User</DialogTitle></DialogHeader>

@@ -30,14 +30,14 @@ export default function DashboardPage() {
             electionService.getAll({ limit: 5 }),
           ])
           setStats(statsRes.data.data)
-          setElections(electionsRes.data.data)
+          setElections(electionsRes.data.data || [])
         } else {
           const [electionsRes, votesRes] = await Promise.all([
             electionService.getAll({ status: 'ACTIVE', limit: 5 }),
             voteService.getMyVotes(),
           ])
-          setElections(electionsRes.data.data)
-          setMyVotes(votesRes.data.data)
+          setElections(electionsRes.data.data || [])
+          setMyVotes(votesRes.data.data || [])
         }
       } catch (err) {
         console.error(err)

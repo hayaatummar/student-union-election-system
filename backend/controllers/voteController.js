@@ -101,21 +101,27 @@ const checkVoteStatus = async (req, res) => {
   try {
     const { electionId } = req.params;
 
-    const votes = await prisma.vote.findMany({
-      where: { userId: req.user.id, electionId },
-      include: {
-        position: { select: { id: true, title: true } },
-        candidate: {
-          include: { user: { select: { fullName: true } } },
+    const [votes, positions] = await Promise.all([
+      prisma.vote.findMany({
+        where: { userId: req.user.id, electionId },
+        select: {
+          id: true,
+          positionId: true,
+          candidateId: true,
+          createdAt: true,
+          candidate: {
+            select: {
+              user: { select: { fullName: true } },
+              position: { select: { id: true, title: true } },
+            },
+          },
         },
-      },
-    });
-
-    // Get all positions for this election
-    const positions = await prisma.position.findMany({
-      where: { electionId },
-      select: { id: true, title: true },
-    });
+      }),
+      prisma.position.findMany({
+        where: { electionId },
+        select: { id: true, title: true },
+      }),
+    ]);
 
     const votedPositionIds = votes.map((v) => v.positionId);
     const remainingPositions = positions.filter((p) => !votedPositionIds.includes(p.id));
@@ -123,12 +129,14 @@ const checkVoteStatus = async (req, res) => {
     return successResponse(res, {
       hasVoted: votes.length > 0,
       votes,
-      votedPositions: votes.map((v) => v.position),
+      votedPositionIds,
+      votedPositions: votes.map((v) => v.candidate?.position).filter(Boolean),
       remainingPositions,
       totalPositions: positions.length,
       votedCount: votes.length,
     });
   } catch (error) {
+    console.error('checkVoteStatus error:', error);
     return errorResponse(res, 'Failed to check vote status.', 500);
   }
 };

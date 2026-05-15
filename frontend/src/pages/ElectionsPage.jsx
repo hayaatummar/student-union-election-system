@@ -24,7 +24,7 @@ export default function ElectionsPage() {
   const [elections, setElections] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [showModal, setShowModal] = useState(false)
@@ -34,8 +34,10 @@ export default function ElectionsPage() {
   const fetchElections = async () => {
     setLoading(true)
     try {
-      const res = await electionService.getAll({ page, limit: 9, search, status: statusFilter })
-      setElections(res.data.data)
+      const params = { page, limit: 9, search }
+      if (statusFilter !== 'all') params.status = statusFilter
+      const res = await electionService.getAll(params)
+      setElections(res.data.data || [])
       setTotalPages(res.data.pagination?.totalPages || 1)
     } catch (err) {
       toast.error('Failed to load elections')
@@ -83,11 +85,11 @@ export default function ElectionsPage() {
       <div className="flex flex-col sm:flex-row gap-3">
         <SearchBar value={search} onChange={setSearch} placeholder="Search elections..." className="flex-1" />
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full sm:w-40">
+          <SelectTrigger className="w-full sm:w-44">
             <SelectValue placeholder="All Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Status</SelectItem>
+            <SelectItem value="all">All Status</SelectItem>
             <SelectItem value="DRAFT">Draft</SelectItem>
             <SelectItem value="ACTIVE">Active</SelectItem>
             <SelectItem value="PAUSED">Paused</SelectItem>
@@ -153,7 +155,7 @@ function ElectionCard({ election, isAdmin, onEdit, onDelete, onStatusChange }) {
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-base leading-tight">{election.title}</CardTitle>
           <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${getStatusColor(election.status)}`}>
-            {election.status.replace('_', ' ')}
+            {election.status.replace(/_/g, ' ')}
           </span>
         </div>
       </CardHeader>
@@ -167,8 +169,8 @@ function ElectionCard({ election, isAdmin, onEdit, onDelete, onStatusChange }) {
             <span>{formatDate(election.startDate)} — {formatDate(election.endDate)}</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> {election._count?.candidates} candidates</span>
-            <span className="flex items-center gap-1"><Vote className="h-3.5 w-3.5" /> {election._count?.votes} votes</span>
+            <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> {election._count?.candidates ?? 0} candidates</span>
+            <span className="flex items-center gap-1"><Vote className="h-3.5 w-3.5" /> {election._count?.votes ?? 0} votes</span>
           </div>
         </div>
 
@@ -182,6 +184,7 @@ function ElectionCard({ election, isAdmin, onEdit, onDelete, onStatusChange }) {
                 variant="outline"
                 size="sm"
                 onClick={() => onStatusChange(election.id, isActive ? 'PAUSED' : 'ACTIVE')}
+                title={isActive ? 'Pause election' : 'Activate election'}
               >
                 {isActive ? <ToggleRight className="h-4 w-4 text-green-500" /> : <ToggleLeft className="h-4 w-4" />}
               </Button>
@@ -196,8 +199,8 @@ function ElectionCard({ election, isAdmin, onEdit, onDelete, onStatusChange }) {
                   <Button size="sm" className="w-full">Vote Now</Button>
                 </Link>
               )}
-              <Link to={`/elections/${election.id}`} className={election.status !== 'ACTIVE' ? 'flex-1' : ''}>
-                <Button variant="outline" size="sm" className={election.status !== 'ACTIVE' ? 'w-full' : ''}>View</Button>
+              <Link to={`/results`} className={election.status !== 'ACTIVE' ? 'flex-1' : ''}>
+                <Button variant="outline" size="sm" className={election.status !== 'ACTIVE' ? 'w-full' : ''}>View Results</Button>
               </Link>
             </>
           )}
@@ -213,16 +216,26 @@ function ElectionModal({ election, onClose, onSave }) {
     description: election?.description || '',
     startDate: election?.startDate?.slice(0, 16) || '',
     endDate: election?.endDate?.slice(0, 16) || '',
-    positions: election?.positions || [{ title: 'President', description: '' }],
+    positions: election?.positions?.length
+      ? election.positions.map((p) => ({ title: p.title, description: p.description || '' }))
+      : [{ title: 'President', description: '' }],
   })
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!form.title.trim()) { toast.error('Title is required'); return }
+    if (!form.startDate || !form.endDate) { toast.error('Start and end dates are required'); return }
+    if (new Date(form.startDate) >= new Date(form.endDate)) { toast.error('End date must be after start date'); return }
     setLoading(true)
     try {
       if (election) {
-        await electionService.update(election.id, form)
+        await electionService.update(election.id, {
+          title: form.title,
+          description: form.description,
+          startDate: form.startDate,
+          endDate: form.endDate,
+        })
         toast.success('Election updated')
       } else {
         await electionService.create(form)
@@ -251,20 +264,20 @@ function ElectionModal({ election, onClose, onSave }) {
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label>Title</Label>
-            <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
+            <Label>Title *</Label>
+            <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required placeholder="e.g. Student Union General Election 2025" />
           </div>
           <div className="space-y-2">
             <Label>Description</Label>
-            <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} />
+            <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} placeholder="Brief description of this election..." />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Start Date</Label>
+              <Label>Start Date *</Label>
               <Input type="datetime-local" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} required />
             </div>
             <div className="space-y-2">
-              <Label>End Date</Label>
+              <Label>End Date *</Label>
               <Input type="datetime-local" value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} required />
             </div>
           </div>
@@ -272,16 +285,17 @@ function ElectionModal({ election, onClose, onSave }) {
           {!election && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label>Positions</Label>
+                <Label>Positions *</Label>
                 <Button type="button" variant="outline" size="sm" onClick={addPosition}>+ Add Position</Button>
               </div>
               {form.positions.map((pos, i) => (
                 <div key={i} className="flex gap-2 items-start">
                   <Input
-                    placeholder="Position title"
+                    placeholder="Position title (e.g. President)"
                     value={pos.title}
                     onChange={(e) => updatePosition(i, 'title', e.target.value)}
                     className="flex-1"
+                    required
                   />
                   <Input
                     placeholder="Description (optional)"
@@ -302,7 +316,7 @@ function ElectionModal({ election, onClose, onSave }) {
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
             <Button type="submit" disabled={loading}>
-              {loading ? 'Saving...' : election ? 'Update' : 'Create'}
+              {loading ? 'Saving...' : election ? 'Update Election' : 'Create Election'}
             </Button>
           </DialogFooter>
         </form>

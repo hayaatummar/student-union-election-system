@@ -40,10 +40,11 @@ export default function LoginPage() {
 
   const fillDemo = (role) => {
     const demos = {
-      admin: { email: 'admin@university.edu', password: 'Admin@123' },
-      student: { email: 'alice@university.edu', password: 'Student@123' },
-      candidate: { email: 'james@university.edu', password: 'Student@123' },
+      admin:     { email: 'admin@uohyd.ac.in',          password: 'Admin@123' },
+      student:   { email: 'rahul.verma@uohyd.ac.in',    password: 'Student@123' },
+      candidate: { email: 'siva.palepu@uohyd.ac.in',    password: 'Student@123' },
     }
+    // fallback to old credentials if new seed hasn't run yet
     setForm(demos[role])
   }
 
@@ -55,8 +56,8 @@ export default function LoginPage() {
           <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary mb-4">
             <GraduationCap className="h-7 w-7 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold">UniElect</h1>
-          <p className="text-muted-foreground text-sm">Student Union Election System</p>
+          <h1 className="text-2xl font-bold">UoH Election Portal</h1>
+          <p className="text-muted-foreground text-sm">University of Hyderabad — Students' Union</p>
         </div>
 
         <Card>

@@ -21,17 +21,17 @@ const getDashboardStats = async (req, res) => {
       prisma.election.count({ where: { status: 'ACTIVE' } }),
       // Recent votes (last 7 days grouped by day)
       prisma.$queryRaw`
-        SELECT DATE(created_at) as date, COUNT(*) as count
-        FROM votes
-        WHERE created_at >= NOW() - INTERVAL '7 days'
-        GROUP BY DATE(created_at)
+        SELECT DATE("created_at") as date, COUNT(*)::int as count
+        FROM "votes"
+        WHERE "created_at" >= NOW() - INTERVAL '7 days'
+        GROUP BY DATE("created_at")
         ORDER BY date ASC
       `,
       // Votes by department
       prisma.$queryRaw`
-        SELECT u.department, COUNT(v.id) as vote_count
-        FROM votes v
-        JOIN users u ON v.user_id = u.id
+        SELECT u.department, COUNT(v.id)::int as vote_count
+        FROM "votes" v
+        JOIN "users" u ON v."user_id" = u.id
         WHERE u.department IS NOT NULL
         GROUP BY u.department
         ORDER BY vote_count DESC
@@ -91,19 +91,19 @@ const getElectionAnalytics = async (req, res) => {
 
     // Votes over time for this election
     const votesOverTime = await prisma.$queryRaw`
-      SELECT DATE(created_at) as date, COUNT(*) as count
-      FROM votes
-      WHERE election_id = ${id}
-      GROUP BY DATE(created_at)
+      SELECT DATE("created_at") as date, COUNT(*)::int as count
+      FROM "votes"
+      WHERE "election_id" = ${id}
+      GROUP BY DATE("created_at")
       ORDER BY date ASC
     `;
 
     // Voter turnout by department
     const turnoutByDept = await prisma.$queryRaw`
-      SELECT u.department, COUNT(DISTINCT v.user_id) as voters
-      FROM votes v
-      JOIN users u ON v.user_id = u.id
-      WHERE v.election_id = ${id} AND u.department IS NOT NULL
+      SELECT u.department, COUNT(DISTINCT v."user_id")::int as voters
+      FROM "votes" v
+      JOIN "users" u ON v."user_id" = u.id
+      WHERE v."election_id" = ${id} AND u.department IS NOT NULL
       GROUP BY u.department
       ORDER BY voters DESC
     `;

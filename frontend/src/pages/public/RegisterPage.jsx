@@ -10,9 +10,21 @@ import useAuthStore from '@/context/authStore'
 import toast from 'react-hot-toast'
 
 const departments = [
-  'Computer Science', 'Engineering', 'Business Administration',
-  'Arts & Humanities', 'Natural Sciences', 'Law', 'Medicine',
-  'Education', 'Social Sciences', 'Architecture',
+  'School of Computer & Information Sciences',
+  'School of Physics',
+  'School of Chemistry',
+  'School of Mathematics & Statistics',
+  'School of Life Sciences',
+  'School of Humanities',
+  'School of Social Sciences',
+  'School of Economics',
+  'School of Management Studies',
+  'School of Communication',
+  'School of Engineering Sciences & Technology',
+  'School of Medical Sciences',
+  'School of Fine Arts',
+  'School of Sastra',
+  'School of Telugu',
 ]
 
 export default function RegisterPage() {
@@ -52,7 +64,10 @@ export default function RegisterPage() {
     }
   }
 
-  const set = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target?.value ?? e }))
+  const handleField = (field) => (e) => {
+    const value = e?.target ? e.target.value : e
+    setForm((prev) => ({ ...prev, [field]: value }))
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-background p-4">
@@ -62,7 +77,7 @@ export default function RegisterPage() {
             <GraduationCap className="h-7 w-7 text-primary-foreground" />
           </div>
           <h1 className="text-2xl font-bold">Create Account</h1>
-          <p className="text-muted-foreground text-sm">Join the Student Union Election System</p>
+          <p className="text-muted-foreground text-sm">University of Hyderabad — Students' Union Election Portal</p>
         </div>
 
         <Card>
@@ -75,26 +90,42 @@ export default function RegisterPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Full Name</Label>
-                  <Input placeholder="John Doe" value={form.fullName} onChange={set('fullName')} className={errors.fullName ? 'border-destructive' : ''} />
+                  <Input
+                    placeholder="John Doe"
+                    value={form.fullName}
+                    onChange={handleField('fullName')}
+                    className={errors.fullName ? 'border-destructive' : ''}
+                  />
                   {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
                 </div>
                 <div className="space-y-2">
                   <Label>Student ID</Label>
-                  <Input placeholder="STU001" value={form.studentId} onChange={set('studentId')} className={errors.studentId ? 'border-destructive' : ''} />
+                  <Input
+                    placeholder="STU001"
+                    value={form.studentId}
+                    onChange={handleField('studentId')}
+                    className={errors.studentId ? 'border-destructive' : ''}
+                  />
                   {errors.studentId && <p className="text-xs text-destructive">{errors.studentId}</p>}
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label>Email</Label>
-                <Input type="email" placeholder="you@university.edu" value={form.email} onChange={set('email')} className={errors.email ? 'border-destructive' : ''} />
+                <Input
+                  type="email"
+                  placeholder="you@uohyd.ac.in"
+                  value={form.email}
+                  onChange={handleField('email')}
+                  className={errors.email ? 'border-destructive' : ''}
+                />
                 {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Department</Label>
-                  <Select value={form.department} onValueChange={set('department')}>
+                  <Select value={form.department} onValueChange={handleField('department')}>
                     <SelectTrigger className={errors.department ? 'border-destructive' : ''}>
                       <SelectValue placeholder="Select department" />
                     </SelectTrigger>
@@ -106,7 +137,7 @@ export default function RegisterPage() {
                 </div>
                 <div className="space-y-2">
                   <Label>Role</Label>
-                  <Select value={form.role} onValueChange={set('role')}>
+                  <Select value={form.role} onValueChange={handleField('role')}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -125,10 +156,14 @@ export default function RegisterPage() {
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Min. 6 characters"
                     value={form.password}
-                    onChange={set('password')}
+                    onChange={handleField('password')}
                     className={errors.password ? 'border-destructive pr-10' : 'pr-10'}
                   />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
@@ -141,14 +176,17 @@ export default function RegisterPage() {
                   type="password"
                   placeholder="Repeat password"
                   value={form.confirmPassword}
-                  onChange={set('confirmPassword')}
+                  onChange={handleField('confirmPassword')}
                   className={errors.confirmPassword ? 'border-destructive' : ''}
                 />
                 {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating account...</> : 'Create Account'}
+                {isLoading
+                  ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating account...</>
+                  : 'Create Account'
+                }
               </Button>
             </form>
 

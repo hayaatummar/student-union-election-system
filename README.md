@@ -1,20 +1,68 @@
-#  Student Union Election System
+<<<<<<< HEAD
+##  Features
+=======
+## 🏛️ About UoH Student Elections
 
-A modern, full-stack web application for managing university student union elections. Built with React, Node.js, PostgreSQL, and Prisma ORM.
+At the University of Hyderabad (also called UoH / HCU), student union elections are highly political, with multiple student organizations and alliances contesting every year.
 
-![Tech Stack](https://img.shields.io/badge/React-18-blue) ![Node.js](https://img.shields.io/badge/Node.js-Express-green) ![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-blue) ![Prisma](https://img.shields.io/badge/ORM-Prisma-purple)
+### 🗳️ Election 2025–26 Results
+
+The 2025–26 elections saw a major victory for the **ABVP–SLVD alliance**.
+
+| Position | Winner | Alliance |
+|----------|--------|----------|
+| President | Siva Palepu | ABVP–SLVD |
+| Vice President | Debendra | ABVP–SLVD |
+| General Secretary | Shruti Priya | ABVP–SLVD |
+| Joint Secretary | Saurabh Shukla | ABVP–SLVD |
+| Sports Secretary | Jwala | ABVP–SLVD |
+| Cultural Secretary | Venus | ABVP–SLVD |
+
+**Key Stats:** 169 candidates · 81%+ voter turnout · 29 polling booths · 6 positions
 
 ---
 
-##  Features
+### 🏛️ Major Student Organizations at UoH
+
+| Abbreviation | Full Name | Ideology |
+|---|---|---|
+| ABVP | Akhil Bharatiya Vidyarthi Parishad | Right / Nationalist |
+| SLVD | Sevalal Vidyarthi Dal | OBC / Tribal Rights |
+| SFI | Students' Federation of India | Left / CPI(M) |
+| ASA | Ambedkar Students' Association | Ambedkarite / Dalit |
+| AISA | All India Students' Association | Left / CPI(ML) |
+| NSUI | National Students' Union of India | Congress-backed |
+| DSU | Democratic Students' Union | Left / Ambedkarite |
+| BSF | Bahujan Students' Front | Bahujan / BSP-linked |
+| MSF | Muslim Students Federation | Minority Rights |
+| PDSU | Progressive Democratic Students Union | Progressive / Left |
+| TSF | Telangana Students' Front | Telangana Regional |
+| AIOBCSA | All India OBC Students Association | OBC Rights |
+
+### 🤝 Alliance Map — 2025–26
+
+| Alliance | Parties | Result |
+|---|---|---|
+| ABVP–SLVD | ABVP + SLVD | 🏆 Won all 6 positions |
+| BSF–DSU–SFI–TSF | BSF + DSU + SFI + TSF | Runner-up |
+| ASA–AISA–Fraternity–MSF | ASA + AISA + Fraternity + MSF | Third |
+
+---
+
+## 🚀 Features
+>>>>>>> fe632c39 (Updated website design and features)
 
 ###  Authentication
 - JWT-based authentication with bcrypt password hashing
-- Role-based access control (Admin, Candidate, Student)
+- Role-based access control (Election Commission Admin, Candidate, Student)
 - Session persistence with Zustand
 - Protected routes per role
 
+<<<<<<< HEAD
 ### Admin
+=======
+### 👑 Election Commission (Admin)
+>>>>>>> fe632c39 (Updated website design and features)
 - Dashboard with live statistics and charts
 - Create, edit, delete, and manage elections
 - Approve/reject candidate applications
@@ -33,11 +81,11 @@ A modern, full-stack web application for managing university student union elect
 
 ### Student/Voter
 - Browse active elections
-- View candidate profiles and manifestos
+- View all 169 candidates with party affiliations
 - Vote securely (one vote per position per election)
 - Voting confirmation modal
 - View voting history
-- View published results
+- View published results with rankings
 
 ### Analytics
 - Real-time vote count updates via Socket.IO
@@ -66,6 +114,7 @@ A modern, full-stack web application for managing university student union elect
 
 ---
 
+<<<<<<< HEAD
 ##  Project Structure
 
 ```
@@ -100,72 +149,53 @@ student-union-election-system/
 ---
 
 ##  Setup Instructions
+=======
+## ⚙️ Setup Instructions
+>>>>>>> fe632c39 (Updated website design and features)
 
 ### Prerequisites
 - Node.js 18+
 - PostgreSQL 14+
-- npm or yarn
+- npm
 
-### 1. Clone & Install
+### 1. Install Dependencies
 
 ```bash
-# Install root dependencies
-npm install
-
-# Install all dependencies
 npm run install:all
 ```
 
 ### 2. Configure Environment
 
-**Backend** — copy and edit:
 ```bash
 cp backend/.env.example backend/.env
 ```
 
 Edit `backend/.env`:
 ```env
-DATABASE_URL="postgresql://postgres:yourpassword@localhost:5432/election_db"
-JWT_SECRET="your-super-secret-key-min-32-chars"
+DATABASE_URL="postgresql://postgres:yourpassword@localhost:5432/uoh_election_db"
+JWT_SECRET="uoh-election-system-super-secret-key"
 JWT_EXPIRES_IN="7d"
 PORT=5000
 NODE_ENV=development
 CLIENT_URL="http://localhost:5173"
 ```
 
-**Frontend** — copy and edit:
-```bash
-cp frontend/.env.example frontend/.env
-```
-
 ### 3. Database Setup
 
 ```bash
-# Create the database in PostgreSQL
-createdb election_db
-
-# Generate Prisma client
+createdb uoh_election_db
 npm run prisma:generate
-
-# Run migrations
 npm run prisma:migrate
-
-# Seed with sample data
 npm run seed
 ```
 
 ### 4. Run the Application
 
 ```bash
-# Run both frontend and backend concurrently
 npm run dev
 ```
 
-Or run separately:
-```bash
-npm run dev:backend   # http://localhost:5000
-npm run dev:frontend  # http://localhost:5173
-```
+Frontend → `http://localhost:5173` | Backend → `http://localhost:5000`
 
 ---
 
@@ -173,9 +203,22 @@ npm run dev:frontend  # http://localhost:5173
 
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | admin@university.edu | Admin@123 |
-| Student | alice@university.edu | Student@123 |
-| Candidate | james@university.edu | Student@123 |
+| Election Commission (Admin) | `admin@uohyd.ac.in` | `Admin@123` |
+| Student Voter | `rahul.verma@uohyd.ac.in` | `Student@123` |
+| Candidate (ABVP–SLVD President) | `siva.palepu@uohyd.ac.in` | `Student@123` |
+| Candidate (BSF Alliance President) | `ananya.dash@uohyd.ac.in` | `Student@123` |
+
+---
+
+## 🗄️ Seeded Data
+
+After running `npm run seed`:
+
+- **2 Elections**: 2025–26 (ACTIVE) and 2024–25 (RESULTS_PUBLISHED)
+- **6 Positions**: President, Vice President, General Secretary, Joint Secretary, Sports Secretary, Cultural Secretary
+- **32 Candidates** across all positions from all major alliances
+- **15 Demo Voters** from various UoH schools
+- **Simulated votes** reflecting realistic vote counts
 
 ---
 
@@ -226,6 +269,7 @@ npm run dev:frontend  # http://localhost:5173
 
 ---
 
+<<<<<<< HEAD
 ##  Database Schema
 
 ```
@@ -273,6 +317,9 @@ AuditLogs ───────────────────────�
 ---
 
 ## Security Features
+=======
+## 🔒 Security Features
+>>>>>>> fe632c39 (Updated website design and features)
 
 - JWT token authentication
 - bcrypt password hashing (12 rounds)
@@ -285,6 +332,7 @@ AuditLogs ───────────────────────�
 
 ---
 
+<<<<<<< HEAD
 ## Responsive Design
 
 - Mobile-first approach
@@ -306,3 +354,6 @@ This project demonstrates:
 - Modern React patterns (hooks, context, Zustand)
 - Clean, modular code structure
 - Professional UI/UX design
+=======
+*Built for the University of Hyderabad Students' Union Election System — Academic Year 2025–26*
+>>>>>>> fe632c39 (Updated website design and features)
