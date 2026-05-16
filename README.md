@@ -1,11 +1,11 @@
 <<<<<<< HEAD
 ##  Features
 =======
-## 🏛️ About UoH Student Elections
+## About UoH Student Elections
 
 At the University of Hyderabad (also called UoH / HCU), student union elections are highly political, with multiple student organizations and alliances contesting every year.
 
-### 🗳️ Election 2025–26 Results
+###  Election 2025–26 Results
 
 The 2025–26 elections saw a major victory for the **ABVP–SLVD alliance**.
 
@@ -22,7 +22,7 @@ The 2025–26 elections saw a major victory for the **ABVP–SLVD alliance**.
 
 ---
 
-### 🏛️ Major Student Organizations at UoH
+###  Major Student Organizations at UoH
 
 | Abbreviation | Full Name | Ideology |
 |---|---|---|
@@ -39,17 +39,17 @@ The 2025–26 elections saw a major victory for the **ABVP–SLVD alliance**.
 | TSF | Telangana Students' Front | Telangana Regional |
 | AIOBCSA | All India OBC Students Association | OBC Rights |
 
-### 🤝 Alliance Map — 2025–26
+### Alliance Map — 2025–26
 
 | Alliance | Parties | Result |
 |---|---|---|
-| ABVP–SLVD | ABVP + SLVD | 🏆 Won all 6 positions |
+| ABVP–SLVD | ABVP + SLVD | Won all 6 positions |
 | BSF–DSU–SFI–TSF | BSF + DSU + SFI + TSF | Runner-up |
 | ASA–AISA–Fraternity–MSF | ASA + AISA + Fraternity + MSF | Third |
 
 ---
 
-## 🚀 Features
+##  Features
 >>>>>>> fe632c39 (Updated website design and features)
 
 ###  Authentication
@@ -61,7 +61,7 @@ The 2025–26 elections saw a major victory for the **ABVP–SLVD alliance**.
 <<<<<<< HEAD
 ### Admin
 =======
-### 👑 Election Commission (Admin)
+###  Election Commission (Admin)
 >>>>>>> fe632c39 (Updated website design and features)
 - Dashboard with live statistics and charts
 - Create, edit, delete, and manage elections
@@ -150,7 +150,7 @@ student-union-election-system/
 
 ##  Setup Instructions
 =======
-## ⚙️ Setup Instructions
+##  Setup Instructions
 >>>>>>> fe632c39 (Updated website design and features)
 
 ### Prerequisites
@@ -210,7 +210,7 @@ Frontend → `http://localhost:5173` | Backend → `http://localhost:5000`
 
 ---
 
-## 🗄️ Seeded Data
+##  Seeded Data
 
 After running `npm run seed`:
 
@@ -318,7 +318,7 @@ AuditLogs ───────────────────────�
 
 ## Security Features
 =======
-## 🔒 Security Features
+##  Security Features
 >>>>>>> fe632c39 (Updated website design and features)
 
 - JWT token authentication
